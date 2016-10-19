@@ -45,9 +45,9 @@
   text-decoration: none;
   padding: 7px 14px;
   border: 1px solid #fff;
-  margin: 100px 0 0 0;
-  background-color: transparent;
+  margin: 50px 0 0 0;
   font-size: 20px;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .hovereffect a.info:hover {

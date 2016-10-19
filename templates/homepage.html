@@ -21,6 +21,7 @@
     <li><a href="#">Home</a></li>
     <li><a href="#portfolio">Profile</a></li>
     <li><a href="#contact">Sign Up</a></li>
+    <li><a href="#contact">Log In</a></li>
   </ul>
 </header>
 
@@ -29,6 +30,7 @@
   <li><a href="#">Home</a></li>
   <li><a href="#portfolio">Profile</a></li>
   <li><a href="#contact">Sign Up</a></li>
+  <li><a href="#contact">Log In</a></li>
 </ul>
 
 <!-- Page content -->
@@ -60,12 +62,12 @@
                     <button type="button" class="w3-red w3-margin-bottom w3-btn-block" onClick="onClick()">Vote</button>
                 </div>
                 <div class="w3-third w3-container w3-margin-bottom">
-                    <div class="w3-container w3-blue w3-center">
+                    <div class="w3-container w3-teal w3-center">
                         <p>More Pics</p>
-                    </div>
+                    </div class="w3-half">
                     {% for i in range(0,4) %}
                         <div class="w3-half">
-                            <img src="{{ user.pet.upload_info.img_upload }}" width="145", height="145">
+                            <img src="{{ user.pet.upload_info.img_upload }}" width="100%">
                         </div>
                     {% endfor %}
                 </div>
