@@ -34,52 +34,56 @@
 </ul>
 
 <!-- Page content -->
-<div class="w3-padding-xlarge w3-margin-top" id="portfolio">
+<div class="w3-padding-top w3-padding-left w3-margin-top" id="portfolio">
 
 <!-- Images (Portfolio) -->
-    {% for user in users %}
-        <div class="w3-row">
-            <div class="w3-threequarter w3-card-2 w3-light-grey w3-margin-bottom w3-margin-right w3-round">
-                <div class="hovereffect w3-container w3-twothird w3-margin-top w3-margin-bottom">
-                    <img src="{{ user.pet.img_ava }}" alt="{{ user.pet.name }}" class="w3-round w3-image" width="100%">
-                    <div class="overlay">
-                       <h2>{{ user.pet.name }}</h2>
-                       <a class="info" href="{{ url_for("get_profile") }}">View Profile</a>
+    <div class="w3-row">
+        <div class="w3-quarter w3-margin-bottom w3-container w3-card-2 w3-light-grey w3-center w3-round">
+            <h1>Rank</h1>
+        </div>
+        <div class="w3-rest w3-container">
+            {% for user in users %}
+                <div class="w3-rest w3-card-2 w3-light-grey w3-margin-bottom w3-round">
+                    <div class="hovereffect w3-container w3-twothird w3-margin-top w3-margin-bottom">
+                        <img src="{{ user.pet.img_ava }}" alt="{{ user.pet.name }}" class="w3-round w3-image" width="100%">
+                        <div class="overlay">
+                           <h2>{{ user.pet.name }}</h2>
+                           <a class="info" href="{{ url_for("get_profile") }}">View Profile</a>
+                        </div>
+                    </div>
+                    <div class="w3-third w3-container">
+                        <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-user w3-margin-right"></i>{{ user.username }}</h4>
+                        <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h4>
+                        <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-pencil w3-margin-right"></i>{{ user.pet.upload_info.des }}</h4>
+                        <h4 class="w3-border-bottom"><i class="w3-text-red fa fa-heart w3-margin-right"></i><a id="clicks">{{ user.pet.like_count }}</a></h4>
+                        <button type="button" class="w3-red w3-margin-bottom w3-btn-block" onClick="onClick()" id ="crazy">Vote</button>
+                        <script type="text/javascript">
+                            var clicks = {{ user.pet.like_count }};
+                            function onClick() {
+                                clicks += 1;
+                                document.getElementById("clicks").innerHTML = clicks.toString();
+                                var a = true;
+                                if (a == true){
+                                    document.getElementById("crazy").disabled = true}
+                            }
+                        </script>
+                    </div>
+                    <div class="w3-third w3-container w3-margin-bottom">
+                        <div class="w3-container w3-teal w3-center">
+                            <p>More Pics</p>
+                        </div class="w3-half">
+                        {% for i in range(0,4) %}
+                            <div class="w3-half">
+                                <img src="{{ user.pet.upload_info.img_upload }}" width="100%">
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
-                <div class="w3-third w3-container">
-                    <script type="text/javascript">
-                        var clicks = {{ user.pet.like_count }};
-                        function onClick() {
-                            clicks += 1;
-                            document.getElementById("clicks").innerHTML = clicks;
-                          var a = true;
-                          if (a == true){
-                          document.getElementById("crazy").disabled = true}
-                        }
-                    </script>
-                    <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-user w3-margin-right"></i>{{ user.username }}</h4>
-                    <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h4>
-                    <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-pencil w3-margin-right"></i>{{ user.pet.upload_info.des }}</h4>
-                    <h4 class="w3-border-bottom"><i class="w3-text-red fa fa-heart w3-margin-right"></i><a id="clicks">{{ user.pet.like_count }}</a></h4>
-                    <button type="button" class="w3-red w3-margin-bottom w3-btn-block" onClick="onClick()" id ="crazy">Vote</button>
-                </div>
-                <div class="w3-third w3-container w3-margin-bottom">
-                    <div class="w3-container w3-teal w3-center">
-                        <p>More Pics</p>
-                    </div class="w3-half">
-                    {% for i in range(0,4) %}
-                        <div class="w3-half">
-                            <img src="{{ user.pet.upload_info.img_upload }}" width="100%">
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="w3-rest w3-container w3-card-2 w3-light-grey w3-center w3-round">
-                <h1>Rank</h1>
-            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+
+    </div>
+
 
 </div>
 </body>
