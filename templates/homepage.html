@@ -53,13 +53,16 @@
                         function onClick() {
                             clicks += 1;
                             document.getElementById("clicks").innerHTML = clicks;
+                          var a = true;
+                          if (a == true){
+                          document.getElementById("crazy").disabled = true}
                         }
                     </script>
                     <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-user w3-margin-right"></i>{{ user.username }}</h4>
                     <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h4>
                     <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-pencil w3-margin-right"></i>{{ user.pet.upload_info.des }}</h4>
                     <h4 class="w3-border-bottom"><i class="w3-text-red fa fa-heart w3-margin-right"></i><a id="clicks">{{ user.pet.like_count }}</a></h4>
-                    <button type="button" class="w3-red w3-margin-bottom w3-btn-block" onClick="onClick()">Vote</button>
+                    <button type="button" class="w3-red w3-margin-bottom w3-btn-block" onClick="onClick()" id ="crazy">Vote</button>
                 </div>
                 <div class="w3-third w3-container w3-margin-bottom">
                     <div class="w3-container w3-teal w3-center">
