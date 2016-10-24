@@ -61,14 +61,15 @@
                         <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-pencil w3-margin-right"></i>{{ user.pet.upload_info.des }}</h4>
                         <div class="like_button {{block_name}}" >
                             <h4 class="w3-border-bottom"><i class="w3-text-red fa fa-heart w3-margin-right"></i><a class="count">{{ user.pet.like_count }}</a></h4>
-                            <button type="button" class="w3-red w3-margin-bottom w3-btn-block">Vote</button>
+                            <button type="button" class="w3-red w3-margin-bottom w3-btn-block" id="crazy">Vote</button>
                         </div>
                         <script type="text/javascript">
-                            $(".{{ block_name }}").unbind('click').on("click", function(){
+                            $(".{{ block_name }}").on("click", function(){
                                 var $counter = $(this).find(".count");
                                 var count = $counter.text() | 0;
-                                count += 1;
-                                $counter.text(count);
+{#                                count += 1;#}
+{#                                $counter.text(count);#}
+{#                                document.getElementById("crazy").disabled = true;#}
                                 $.ajax({
                                         url: '/',
                                         data: {
@@ -76,7 +77,10 @@
                                             votes : count
                                         },
                                         type: 'POST'
-                                    });
+                                    })
+                                        .done(function(data) {
+                                    $(".count").text(data.votes).show()
+                                });
                             });
                         </script>
 

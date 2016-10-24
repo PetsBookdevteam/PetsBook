@@ -28,10 +28,9 @@ def home_page():
     elif request.method == "POST":
         username = request.form["username"]
         votes = request.form["votes"]
-        print("username : {0}".format(username))
+        votes = int(votes) + 1
         Users.objects(username=username).update_one(set__pet__like_count=votes)
-        return json.dumps({"votes": votes, "username": username})
-
+        return jsonify({"votes": votes, "username": username})
 
 @app.route('/profile')
 def get_profile():
