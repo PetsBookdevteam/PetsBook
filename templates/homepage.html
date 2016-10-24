@@ -40,13 +40,13 @@
 <!-- Images (Portfolio) -->
     <div class="w3-row">
         <div class="w3-quarter w3-container">
-            <div class="w3-container w3-margin-bottom w3-border-right w3-round w3-center">
+            <div class="w3-container w3-margin-bottom w3-round w3-center">
                 <h1 class="w3-border-bottom">Rank</h1>
             </div>
         </div>
         <div class="w3-rest w3-container" id="pet">
             {% for user in users %}
-{#        {% set user = users[0] %}#}
+                {% set block_name = "block_" + user.username %}
                 <div class="w3-rest w3-border-bottom w3-margin-bottom w3-round">
                     <div class="hovereffect w3-container w3-twothird w3-margin-top w3-margin-bottom">
                         <img src="{{ user.pet.img_ava }}" alt="{{ user.pet.name }}" class="w3-round w3-image" width="100%">
@@ -56,24 +56,28 @@
                         </div>
                     </div>
                     <div class="w3-third w3-container">
-                        <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-user w3-margin-right"></i>{{ user.username }}</h4>
+                        <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-user w3-margin-right"></i><a class = 'nameId'>{{ user.username }}</a></h4>
                         <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h4>
                         <h4 class="w3-border-bottom"><i class="w3-text-teal fa fa-pencil w3-margin-right"></i>{{ user.pet.upload_info.des }}</h4>
-                        <div class="like_button">
+                        <div class="like_button {{block_name}}" >
                             <h4 class="w3-border-bottom"><i class="w3-text-red fa fa-heart w3-margin-right"></i><a class="count">{{ user.pet.like_count }}</a></h4>
                             <button type="button" class="w3-red w3-margin-bottom w3-btn-block">Vote</button>
                         </div>
                         <script type="text/javascript">
-                            $(".like_button").unbind('click').on("click", function(){
+                            $(".{{ block_name }}").unbind('click').on("click", function(){
                                 var $counter = $(this).find(".count");
-                                var count = $counter.text() | 0; //corose current count to an int
-                                count = count + 1;
-                                $counter.text(count);//set new count
+                                var count = $counter.text() | 0;
+                                count += 1;
+                                $counter.text(count);
+                                $.ajax({
+                                        url: '/',
+                                        data: {
+                                            username : "{{ user.username }}",
+                                            votes : count
+                                        },
+                                        type: 'POST'
+                                    });
                             });
-{#                            $.ajax( { url: "https://api.mlab.com/api/1/databases/c4e6db/collections/users/"+ {{ user._id }} + ""+ "apiKey=qPzoH9RcOcSirKhmznNMhN1Tgv2Y7BlL",#}
-{#                              data: JSON.stringify( { "$set" : { "vote" : clicks } } ),#}
-{#                              type: "PUT",#}
-{#                              contentType: "application/json" } );#}
                         </script>
 
 {#                        <button type="button" class="w3-red w3-margin-bottom w3-btn-block" onClick="onClick()" id ="crazy">Vote</button>#}
@@ -82,23 +86,9 @@
 {#                                function onClick() {#}
 {#                                    clicks += 1;#}
 {#                                    document.getElementById("votes").innerHTML = clicks.toString();#}
-{#                                    var a = true;#}
-{#                                    if (a == true){#}
-{#                                        document.getElementById("crazy").disabled = true}#}
-{#                                    return clicks;#}
+
 {#                                }#}
-{#                            $(function() {#}
-{#                                $('button').click(function() {#}
-{#                                    var votes = clicks;#}
-{#                                    $.ajax({#}
-{#                                        url: '/',#}
-{#                                        data: {#}
-{#                                            votes : votes#}
-{#                                        },#}
-{#                                        type: 'POST'#}
-{#                                    });#}
-{#                                });#}
-{#                            });#}
+
 {#                        </script>#}
                     </div>
                     <div class="w3-third w3-container w3-margin-bottom">

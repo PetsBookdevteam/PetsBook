@@ -26,9 +26,12 @@ def home_page():
     if request.method == "GET":
         return render_template("homepage.html", users=Users.objects)
     elif request.method == "POST":
+        username = request.form["username"]
         votes = request.form["votes"]
-        print(votes)
-        return json.dumps({"votes": votes})
+        print("username : {0}".format(username))
+        Users.objects(username=username).update_one(set__pet__like_count=votes)
+        return json.dumps({"votes": votes, "username": username})
+
 
 @app.route('/profile')
 def get_profile():
