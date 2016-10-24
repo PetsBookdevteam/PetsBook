@@ -67,9 +67,6 @@
                             $(".{{ block_name }}").on("click", function(){
                                 var $counter = $(this).find(".count");
                                 var count = $counter.text() | 0;
-{#                                count += 1;#}
-{#                                $counter.text(count);#}
-{#                                document.getElementById("crazy").disabled = true;#}
                                 $.ajax({
                                         url: '/',
                                         data: {
