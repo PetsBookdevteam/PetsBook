@@ -19,12 +19,16 @@ class Users(Document):
     password = StringField()
     pet = EmbeddedDocumentField("Pets")
 
-
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 def home_page():
-    return render_template("homepage.html", users=Users.objects)
+    if request.method == "GET":
+        return render_template("homepage.html", users=Users.objects)
+    elif request.method == "POST":
+        votes = request.form["votes"]
+        print(votes)
+        return json.dumps({"votes": votes})
 
 @app.route('/profile')
 def get_profile():
