@@ -28,7 +28,6 @@ def home_page():
     elif request.method == "POST":
         username = request.form["username"]
         votes = request.form["votes"]
-        votes = int(votes) + 1
         Users.objects(username=username).update_one(set__pet__like_count=votes)
         return jsonify({"votes": votes, "username": username})
 
