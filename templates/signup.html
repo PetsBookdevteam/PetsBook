@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+</head>
+<body>
+<div class="w3-container w3-red">
+    <span onclick="this.parentElement.style.display='none'" class="w3-closebtn">&times;</span>
+    <p>Create your account first! Already have one? <a href="{{ url_for("do_signin") }}" style="color: blue; text-decoration: none">Sign in here</a></p>
+</div>
+<div class="w3-card-4 w3-margin">
+    <div class="w3-container w3-teal w3-margin-bottom">
+        <h1>Sign Up</h1>
+    </div>
+    <form class="w3-container" method="post" action="{{ url_for("do_signup") }}">
+        <label>Username</label>
+        <input type="text" name="username" class="w3-input" required><br>
+        <label>Password</label>
+        <input type="password" name="password" class="w3-input" required><br>
+        <input type="submit" value="Sign Up" class="w3-button w3-red w3-btn-block w3-margin-bottom">
+    </form>
+</div>
+</body>
+</html>

@@ -31,9 +31,19 @@ def home_page():
         Users.objects(username=username).update_one(set__pet__like_count=votes)
         return jsonify({"votes": votes, "username": username})
 
-@app.route('/profile')
-def get_profile():
-    return "Test"
+@app.route('/signup', methods=['GET', 'POST'])
+def do_signup():
+    if request.method == "GET":
+        return render_template("signup.html")
+    elif request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        user = Users(username=username, password=password)
+        user.save()
+        return redirect(url_for("do_signin"))
 
+@app.route('/signin')
+def do_signin():
+    return 'Signed In'
 if __name__ == '__main__':
     app.run()
