@@ -7,7 +7,7 @@ class Upload_info(Document):
     img_upload = StringField()
     des = StringField()
 
-class Pets(Document):
+class Pet(Document):
     name = StringField()
     img_ava = StringField()
     rank = IntField()
@@ -17,7 +17,7 @@ class Pets(Document):
 class Users(Document):
     username = StringField()
     password = StringField()
-    pet = EmbeddedDocumentField("Pets")
+    pet = EmbeddedDocumentField("Pet")
 
 app = Flask(__name__)
 
@@ -39,6 +39,8 @@ def do_signup():
         username = request.form["username"]
         password = request.form["password"]
         user = Users(username=username, password=password)
+        user.pet = Pet()
+        user.pet.upload_info = Upload_info()
         user.save()
         return redirect(url_for("do_signin"))
 
