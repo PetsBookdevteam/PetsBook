@@ -12,6 +12,7 @@ class Pet(Document):
     img_ava = StringField()
     rank = IntField()
     like_count = IntField()
+    liked_users = ListField()
     upload_info = EmbeddedDocumentField("Upload_info")
 
 class Users(Document):
@@ -21,15 +22,11 @@ class Users(Document):
 
 app = Flask(__name__)
 
+app.config["SECRET_KEY"] = "PetsBookDevTe@m"
+
 @app.route('/', methods=["GET", "POST"])
 def home_page():
-    if request.method == "GET":
-        return render_template("homepage.html", users=Users.objects)
-    elif request.method == "POST":
-        username = request.form["username"]
-        votes = request.form["votes"]
-        Users.objects(username=username).update_one(set__pet__like_count=votes)
-        return jsonify({"votes": votes, "username": username})
+    return render_template("homepage.html", users=Users.objects)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def do_signup():
@@ -42,8 +39,38 @@ def do_signup():
         user.save()
         return redirect(url_for("do_signin"))
 
-@app.route('/signin')
+@app.route('/signin', methods=['GET', 'POST'])
 def do_signin():
-    return 'Signed In'
+    if request.method == "GET":
+        return render_template("signin.html")
+    elif request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        found_user = False
+        for user in Users.objects:
+            if user.username == username and user.password == password:
+                found_user = True
+                break
+        if found_user:
+            session["user"] = username
+            return redirect(url_for("home"))
+        else:
+            return "User not found"
+
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    if "user" in session and session["user"]:
+        if request.method == "GET":
+            return render_template("homepageloggedin.html", users=Users.objects)
+        elif request.method == "POST":
+            username = request.form["username"]
+            votes = request.form["votes"]
+            found_document = Users.objects.get(username=username)
+            if session["user"] not in found_document.pet["liked_users"]:
+                votes = int(votes) + 1
+                Users.objects(username=username).update_one(set__pet__like_count=votes,
+                                                            add_to_set__pet__liked_users=session["user"], )
+        return jsonify({"votes": votes})
+
 if __name__ == '__main__':
     app.run()
