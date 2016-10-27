@@ -18,7 +18,7 @@
   </div>
 
 <!-- Navbar (placed at the bottom of the header image) -->
-  <ul class="w3-navbar w3-light-grey w3-round w3-display-bottommiddle w3-hide-small" style="bottom:-16px">
+  <ul class="w3-navbar w3-green w3-round w3-display-bottommiddle w3-hide-small" style="bottom:-16px">
     <li><a href="{{ url_for("home_page") }}">Home</a></li>
     <li><a href="{{ url_for("do_signup") }}">Profile</a></li>
     <li><a href="{{ url_for("do_signup") }}">Sign Up</a></li>
@@ -27,7 +27,7 @@
 </header>
 
 <!-- Navbar on small screens -->
-<ul class="w3-navbar w3-light-grey w3-hide-large w3-hide-medium">
+<ul class="w3-navbar w3-green w3-hide-large w3-hide-medium">
   <li><a href="{{ url_for("home_page") }}">Home</a></li>
   <li><a href="{{ url_for("do_signup") }}">Profile</a></li>
   <li><a href="{{ url_for("do_signup") }}">Sign Up</a></li>
@@ -57,9 +57,9 @@
                             </div>
                         </div>
                         <div class="w3-third w3-container">
-                            <h5><i class="w3-text-teal fa fa-user w3-margin-right"></i>{{ user.username }}</h5>
-                            <h5><i class="w3-text-teal fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h5>
-                            <h5><i class="w3-text-teal fa fa-pencil w3-margin-right"></i>{{ user.pet.upload_info.des }}</h5>
+                            <h5><i class="w3-text-green fa fa-user w3-margin-right"></i>{{ user.username }}</h5>
+                            <h5><i class="w3-text-green fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h5>
+                            <h5><i class="w3-text-green fa fa-pencil w3-margin-right"></i>{{ user.pet.upload_info.des }}</h5>
                             <div class="like_button" >
                                 <h5 class="w3-border-bottom"><i class="w3-text-red fa fa-heart w3-margin-right"></i><a class="count">{{ user.pet.like_count }}</a></h5>
                                 <a href="{{ url_for("do_signup") }}"><button type="button" class="w3-red w3-padding w3-margin-bottom w3-btn-block">Vote</button></a>
@@ -83,7 +83,7 @@
 {#                            </script>#}
                         </div>
                         <div class="w3-third w3-container w3-margin-bottom">
-                            <div class="w3-container w3-teal w3-center">
+                            <div class="w3-container w3-green w3-center">
                                 <p>More Pics</p>
                             </div>
                             {% for i in range(0,4) %}

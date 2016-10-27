@@ -7,9 +7,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
 <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css">
 <link rel="stylesheet" href="../static/effect.css">
+<link rel="stylesheet" href="../static/alert.css">
 <body>
 
 <!-- Header -->
+<div class="alert success">
+    <span class="closebtn">&times;</span>
+    <p>You have successfully signed in to your account!</p>
+</div>
+<script>
+var close = document.getElementsByClassName("closebtn");
+var i;
+for (i = 0; i < close.length; i++) {
+    close[i].onclick = function(){
+        var div = this.parentElement;
+        div.style.opacity = "0";
+        setTimeout(function(){ div.style.display = "none"; }, 600);
+    }
+}
+</script>
 <header class="w3-display-container w3-content" style="max-width:1500px">
   <img class="w3-image" src="http://pawsitivepetsit.com/wp-content/uploads/2015/03/Pets.jpg" alt="Featured Pet" width="100%">
   <div class="w3-display-middle w3-padding-xlarge w3-border w3-wide w3-text-light-grey w3-center">
@@ -18,20 +34,18 @@
   </div>
 
 <!-- Navbar (placed at the bottom of the header image) -->
-  <ul class="w3-navbar w3-light-grey w3-round w3-display-bottommiddle w3-hide-small" style="bottom:-16px">
-    <li><a href="#portfolio">Home</a></li>
-    <li><a href="#contact">Profile</a></li>
-    <li><a href="#contact">Sign Up</a></li>
-    <li><a href="#contact">Log In</a></li>
+  <ul class="w3-navbar w3-green w3-round w3-display-bottommiddle w3-hide-small" style="bottom:-16px">
+    <li><a href="{{ url_for("home") }}">Home</a></li>
+    <li><a href="">Profile</a></li>
+    <li><a href="{{ url_for("do_signout") }}">Sign Out</a></li>
   </ul>
 </header>
 
 <!-- Navbar on small screens -->
-<ul class="w3-navbar w3-light-grey w3-hide-large w3-hide-medium">
-  <li><a href="#pets">Home</a></li>
-  <li><a href="#portfolio">Profile</a></li>
-  <li><a href="#contact">Sign Up</a></li>
-  <li><a href="#contact">Log In</a></li>
+<ul class="w3-navbar w3-green w3-hide-large w3-hide-medium">
+  <li><a href="{{ url_for("home") }}">Home</a></li>
+  <li><a href="">Profile</a></li>
+  <li><a href="{{ url_for("do_signout") }}">Sign Out</a></li>
 </ul>
 
 <!-- Page content -->
@@ -57,35 +71,40 @@
                             </div>
                         </div>
                         <div class="w3-third w3-container">
-                            <h5><i class="w3-text-teal fa fa-user w3-margin-right"></i>{{ user.username }}</h5>
-                            <h5><i class="w3-text-teal fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h5>
-                            <h5><i class="w3-text-teal fa fa-pencil w3-margin-right"></i>{{ user.pet.upload_info.des }}</h5>
-                            <div class="like_button {{block_name}}" >
-                                <h5 class="w3-border-bottom"><i class="w3-text-red fa fa-heart w3-margin-right"></i><a class="count" id="{{ block_name }}_1">{{ user.pet.like_count }}</a></h5>
-                                <button type="button" class="w3-red w3-padding w3-margin-bottom w3-btn-block" id="{{ block_name }}_2">Vote</button>
-                            </div>
-                            <script type="text/javascript">
-                                $(".{{ block_name }}").one("click", function(){
-                                    var $counter = $(this).find(".count");
-                                    var count = $counter.text() | 0;
-                                    $.ajax({
-                                        url: '/home',
-                                        data: {
-                                            username : "{{ user.username }}",
-                                            votes : count
-                                        },
-                                        type: 'POST'
-                                    })
-                                    .done(function (data) {
-                                        $("#{{ block_name }}_1").text(data.votes).show()
+                            <h5><i class="w3-text-green fa fa-user w3-margin-right"></i>{{ user.username }}</h5>
+                            <h5><i class="w3-text-green fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h5>
+                            <h5><i class="w3-text-green fa fa-pencil w3-margin-right"></i>{{ user.pet.upload_info.des }}</h5>
+                            {% if liked_user in user.pet.liked_users %}
+                                <h5 class="w3-border-bottom"><i class="w3-text-red fa fa-heart w3-margin-right"></i>{{ user.pet.like_count }}</h5>
+                                <div class="w3-container w3-red w3-padding w3-margin-bottom w3-center">Voted</div>
+                            {% elif liked_user not in user.pet.liked_users %}
+                                <div class="{{block_name}}" >
+                                    <h5 class="w3-border-bottom"><i class="w3-text-red fa fa-heart w3-margin-right"></i><a class="count" id="{{ block_name }}_1">{{ user.pet.like_count }}</a></h5>
+                                    <button type="button" class="w3-red w3-padding w3-margin-bottom w3-btn-block" id="{{ block_name }}_2">Vote</button>
+                                </div>
+                                <script type="text/javascript">
+                                    $(".{{ block_name }}").on("click", function(){
+                                        var $counter = $(this).find(".count");
+                                        var count = $counter.text() | 0;
+                                        $.ajax({
+                                            url: '/home',
+                                            data: {
+                                                username : "{{ user.username }}",
+                                                votes : count
+                                            },
+                                            type: 'POST'
+                                        })
+                                        .done(function (data) {
+                                            $("#{{ block_name }}_1").text(data.votes).show()
+                                        });
+                                        event.preventDefault();
+                                        $('#{{ block_name }}_2').replaceWith('<div class="w3-container w3-red w3-padding w3-margin-bottom w3-center">Voted</div>');
                                     });
-                                    event.preventDefault();
-                                    $('#{{ block_name }}_2').replaceWith('<div class="w3-container w3-red w3-padding w3-margin-bottom w3-center">Voted</div>');
-                                });
-                            </script>
+                                </script>
+                            {% endif %}
                         </div>
                         <div class="w3-third w3-container w3-margin-bottom">
-                            <div class="w3-container w3-teal w3-center">
+                            <div class="w3-container w3-green w3-center">
                                 <p>More Pics</p>
                             </div>
                             {% for i in range(0,4) %}

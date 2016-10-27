@@ -3,20 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
+    <script type=text/javascript src="../static/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="../static/alert.css">
 </head>
 <body>
-<div class="w3-container w3-red">
-    <span onclick="this.parentElement.style.display='none'" class="w3-closebtn">&times;</span>
+<div class="alert">
+    <span class="closebtn">&times;</span>
     <p>Create your account first! Already have one? <a href="{{ url_for("do_signin") }}" style="color: blue; text-decoration: none">Sign in here</a></p>
 </div>
+<script>
+var close = document.getElementsByClassName("closebtn");
+var i;
+for (i = 0; i < close.length; i++) {
+    close[i].onclick = function(){
+        var div = this.parentElement;
+        div.style.opacity = "0";
+        setTimeout(function(){ div.style.display = "none"; }, 600);
+    }
+}
+</script>
 <div class="w3-card-4 w3-margin">
-    <div class="w3-container w3-teal w3-margin-bottom">
+    <div class="w3-container w3-green w3-margin-bottom">
         <h1>Sign Up</h1>
     </div>
     <form class="w3-container" method="post" action="{{ url_for("do_signup") }}">
         <label>Username</label>
         <input type="text" name="username" class="w3-input" required><br>
+        <p class="w3-text-red">{{ alert }}</p>
         <label>Password</label>
         <input type="password" name="password" class="w3-input" required><br>
         <input type="submit" value="Sign Up" class="w3-button w3-red w3-btn-block w3-margin-bottom">
