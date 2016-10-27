@@ -66,7 +66,12 @@ def home():
     if "user" in session and session["user"]:
         if request.method == "GET":
             liked_user = session["user"]
-            return render_template("homepageloggedin.html", users=Users.objects, liked_user=liked_user)
+            rank_list = []
+            for user in Users.objects:
+                if user.pet != None:
+                    rank_list.append((user.pet["like_count"], user["username"]))
+                    rank_list.sort(reverse=True)
+            return render_template("homepageloggedin.html", users=Users.objects, liked_user=liked_user, rank=rank_list)
         elif request.method == "POST":
             username = request.form["username"]
             votes = request.form["votes"]
@@ -78,6 +83,7 @@ def home():
         return jsonify({"votes": votes})
     else:
         return redirect(url_for("do_signup"))
+
 @app.route('/signout')
 def do_signout():
     session.pop("user", None)
