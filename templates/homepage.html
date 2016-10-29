@@ -5,101 +5,82 @@
 <script type=text/javascript src="../static/jquery-3.1.1.min.js"></script>
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lobster">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Great+Vibes">
 <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css">
 <link rel="stylesheet" href="../static/effect.css">
+<link rel="stylesheet" href="../static/footer.css">
 <body>
 
-<!-- Header -->
-<header class="w3-display-container w3-content" style="max-width:1500px">
-  <img class="w3-image" src="http://pawsitivepetsit.com/wp-content/uploads/2015/03/Pets.jpg" alt="Featured Pet" width="100%">
-  <div class="w3-display-middle w3-padding-xlarge w3-border w3-wide w3-text-light-grey w3-center">
-    <h1 class="w3-hide-medium w3-hide-small w3-xxxlarge">PetsBook</h1>
-    <h5 class="w3-hide-large" style="white-space:nowrap">PetsBook</h5>
-  </div>
-
-<!-- Navbar (placed at the bottom of the header image) -->
-  <ul class="w3-navbar w3-green w3-round w3-display-bottommiddle w3-hide-small" style="bottom:-16px">
-    <li><a href="{{ url_for("home_page") }}">Home</a></li>
-    <li><a href="{{ url_for("do_signup") }}">Profile</a></li>
-    <li><a href="{{ url_for("do_signup") }}">Sign Up</a></li>
-    <li><a href="{{ url_for("do_signin") }}">Sign In</a></li>
-  </ul>
-</header>
-
-<!-- Navbar on small screens -->
-<ul class="w3-navbar w3-green w3-hide-large w3-hide-medium">
-  <li><a href="{{ url_for("home_page") }}">Home</a></li>
-  <li><a href="{{ url_for("do_signup") }}">Profile</a></li>
-  <li><a href="{{ url_for("do_signup") }}">Sign Up</a></li>
-  <li><a href="{{ url_for("do_signin") }}">Sign In</a></li>
-</ul>
-
-<!-- Page content -->
-<div class="w3-padding-top w3-margin-top">
-
-<!-- Images (Portfolio) -->
-    <div class="w3-row">
-        <div class="w3-quarter w3-container w3-border-right">
-            <div class="w3-container w3-margin-bottom w3-round w3-center">
-                <h1 class="w3-border-bottom">Rank</h1>
-            </div>
-        </div>
-        <div class="w3-rest w3-container">
-            {% for user in users %}
-                {% if user.pet != None %}
-{#                    {% set block_name = "block_" + user.username %}#}
-                    <div class="w3-rest w3-border-bottom w3-margin-bottom">
-                        <div class="hovereffect w3-container w3-twothird w3-margin-top w3-margin-bottom">
-                            <img src="{{ user.pet.img_ava }}" alt="{{ user.pet.name }}" class="w3-image" width="100%">
-                            <div class="overlay">
-                               <h2>{{ user.pet.name }}</h2>
-                               <a class="info" href="{{ url_for("do_signup") }}">View Profile</a>
-                            </div>
-                        </div>
-                        <div class="w3-third w3-container">
-                            <h5><i class="w3-text-green fa fa-user w3-margin-right"></i>{{ user.username }}</h5>
-                            <h5><i class="w3-text-green fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h5>
-                            <h5><i class="w3-text-green fa fa-pencil w3-margin-right"></i>{{ user.pet.upload_info.des }}</h5>
-                            <div class="like_button" >
-                                <h5 class="w3-border-bottom"><i class="w3-text-red fa fa-heart w3-margin-right"></i><a class="count">{{ user.pet.like_count }}</a></h5>
-                                <a href="{{ url_for("do_signup") }}"><button type="button" class="w3-red w3-padding w3-margin-bottom w3-btn-block">Vote</button></a>
-                            </div>
-{#                            <script type="text/javascript">#}
-{#                                $(".{{ block_name }}").one("click", function(){#}
-{#                                    var $counter = $(this).find(".count");#}
-{#                                    var count = $counter.text() | 0;#}
-{#                                    count += 1;#}
-{#                                    $counter.text(count);#}
-{#                                    $.ajax({#}
-{#                                        url: '/',#}
-{#                                        data: {#}
-{#                                            username : "{{ user.username }}",#}
-{#                                            votes : count#}
-{#                                        },#}
-{#                                        type: 'POST'#}
-{#                                    });#}
-{#                                    $('#{{ block_name }}').replaceWith('<div class="w3-container w3-red w3-padding w3-margin-bottom w3-center">Voted</div>');#}
-{#                                });#}
-{#                            </script>#}
-                        </div>
-                        <div class="w3-third w3-container w3-margin-bottom">
-                            <div class="w3-container w3-green w3-center">
-                                <p>More Pics</p>
-                            </div>
-                            {% for i in range(0,4) %}
-                                <div class="w3-half">
-                                    <img src="{{ user.pet.upload_info.img_upload }}" width="100%">
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
-
+<ul class="w3-navbar w3-green">
+    <div class="w3-container w3-center w3-half">
+        <h1 class="w3-border-right" style="font-family: 'Lobster', serif">PetsBook</h1>
     </div>
-
-
+    <div class="w3-container w3-half">
+        <form method="POST" action="{{ url_for("home_page") }}">
+            <div class="w3-container w3-quarter">
+                <h1>Sign In</h1>
+            </div>
+            <div class="w3-container w3-quarter">
+                <input type="text" name="username_signin" class="w3-margin-top w3-input w3-border w3-round w3-hover-red" placeholder="Username" required><br>
+            </div>
+            <div class="w3-container w3-quarter">
+                <input type="password" name="password_signin" class="w3-margin-top w3-input w3-border w3-round w3-hover-red" placeholder="Password" required><br>
+            </div>
+            <div class="w3-container w3-quarter" style="margin-top: 20px">
+                <input type="submit" name="signin" value="Sign In" class="w3-button w3-red w3-btn-block w3-round w3-margin-bottom">
+            </div>
+        </form>
+    </div>
+</ul>
+<div class="w3-container">
+    <div class="w3-display-container w3-content w3-padding w3-twothird" style="margin-top: 16px">
+        <img class="mySlides w3-animate-fading w3-image" src="https://scontent-hkg3-1.xx.fbcdn.net/v/t35.0-12/14907733_1120266308092137_1144984849_o.jpg?oh=dd5e48f194cbb557afc808f8cfffa7e0&oe=58159AAA" width="100%">
+        <img class="mySlides w3-animate-fading w3-image" src="https://scontent-hkg3-1.xx.fbcdn.net/v/t35.0-12/14813190_1120266298092138_1345671897_o.jpg?oh=971f63770e9da5a9c72902a6388ce6f1&oe=5816783E" width="100%">
+        <img class="mySlides w3-animate-fading w3-image" src="https://scontent-hkg3-1.xx.fbcdn.net/v/t35.0-12/14859423_1120272948091473_2005818596_o.png?oh=0bf1a0f301ac4998999da8a1c6df11c1&oe=58166D52" width="100%">
+        <img class="mySlides w3-animate-fading w3-image" src="https://scontent-hkg3-1.xx.fbcdn.net/v/t35.0-12/14813382_1120266294758805_1937196438_o.jpg?oh=8e498e72fd469e1811e8bc27fff28587&oe=5815562F" width="100%">
+        <script>
+            var slideIndex = 0;
+            carousel();
+            function carousel() {
+                var i;
+                var x = document.getElementsByClassName("mySlides");
+                for (i = 0; i < x.length; i++) {
+                    x[i].style.display = "none";
+                }
+                slideIndex++;
+                if (slideIndex > x.length) {slideIndex = 1}
+                x[slideIndex-1].style.display = "block";
+                setTimeout(carousel, 10000); // Change image every 2 seconds
+            }
+        </script>
+        <div class="w3-display-middle w3-padding-xlarge w3-border w3-wide w3-light-grey w3-text-dark-grey w3-center w3-round" style="opacity: 0.7">
+            <h1 class="w3-hide-medium w3-hide-small w3-xxxlarge" style="font-family: 'Lobster', serif">PetsBook</h1>
+            <h5 class="w3-hide-large" style="font-family: 'Lobster', serif">PetsBook</h5>
+        </div>
+    </div>
+    <div class="w3-container w3-third" style="margin-top: 16px">
+        <div class="w3-container w3-border-left" style="margin-top: 48px; margin-right: -16px">
+            <div class="w3-margin-bottom w3-container w3-green w3-round">
+                <h1>Sign Up</h1>
+            </div>
+            <form class="w3-container" method="POST" action="{{ url_for("home_page") }}">
+                <label>Username</label>
+                <input type="text" name="username_signup" class="w3-input" required><br>
+                <p class="w3-text-red">{{ alert_signup }}</p>
+                <label>Password</label>
+                <input type="password" name="password_signup" class="w3-input" required><br>
+                <input type="submit" name="signup" value="Sign Up" class="w3-button w3-red w3-btn-block w3-round w3-margin-bottom">
+            </form>
+        </div>
+    </div>
+    <div class="w3-container w3-twothird w3-center">
+        <h1 class="w3-text-red" style="font-family: 'Great Vibes', serif"><i>"Where the cuteness spreads around."</i></h1>
+    </div>
 </div>
+<footer class="w3-container w3-red w3-center">
+    <h3 style="font-family: 'Lobster', serif">PetsBook</h3>
+    <p>petsbookdevteam@gmail.com</p>
+</footer>
 </body>
 </html>

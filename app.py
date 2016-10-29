@@ -26,40 +26,66 @@ app.config["SECRET_KEY"] = "PetsBookDevTe@m"
 
 @app.route('/', methods=["GET", "POST"])
 def home_page():
-    return render_template("homepage.html", users=Users.objects)
-
-@app.route('/signup', methods=['GET', 'POST'])
-def do_signup():
     if request.method == "GET":
-        return render_template("signup.html")
+        return render_template("homepage.html", users=Users.objects)
     elif request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        for user in Users.objects:
-            if user.username == username:
-                alert = "Your username has already been taken. Try another!"
-                return render_template("signup.html", alert=alert)
-        user = Users(username=username, password=password)
-        user.save()
-        return redirect(url_for("do_signin"))
+        if 'signin' in request.form:
+            username_signin = request.form["username_signin"]
+            password_signin = request.form["password_signin"]
+            found_user = False
+            for user in Users.objects:
+                if user.username == username_signin and user.password == password_signin:
+                    found_user = True
+                    break
+            if found_user:
+                session["user"] = username_signin
+                return redirect(url_for("home"))
+            else:
+                alert_signin = "User not found. Please try again!"
+                return render_template("signin.html", alert_signin=alert_signin)
+        elif 'signup' in request.form:
+            username_signup = request.form["username_signup"]
+            password_signup = request.form["password_signup"]
+            for user in Users.objects:
+                if user.username == username_signup:
+                    alert_signup = "This username has already been taken!"
+                    return render_template("homepage.html", alert_signup=alert_signup)
+            user = Users(username=username_signup, password=password_signup)
+            user.save()
+            return render_template("signin.html")
 
-@app.route('/signin', methods=['GET', 'POST'])
-def do_signin():
-    if request.method == "GET":
-        return render_template("signin.html")
-    elif request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        found_user = False
-        for user in Users.objects:
-            if user.username == username and user.password == password:
-                found_user = True
-                break
-        if found_user:
-            session["user"] = username
-            return redirect(url_for("home"))
-        else:
-            return "User not found"
+# @app.route('/signup', methods=['GET', 'POST'])
+# def do_signup():
+#     if request.method == "GET":
+#         return render_template("signup.html")
+#     elif request.method == "POST":
+#         username = request.form["username"]
+#         password = request.form["password"]
+#         for user in Users.objects:
+#             if user.username == username:
+#                 alert = "Your username has already been taken. Try another!"
+#                 return render_template("signup.html", alert=alert)
+#         user = Users(username=username, password=password)
+#         user.save()
+#         return redirect(url_for("do_signin"))
+#
+# @app.route('/signin', methods=['GET', 'POST'])
+# def do_signin():
+#     if request.method == "GET":
+#         return render_template("signin.html")
+#     elif request.method == "POST":
+#         username = request.form["username"]
+#         password = request.form["password"]
+#         found_user = False
+#         for user in Users.objects:
+#             if user.username == username and user.password == password:
+#                 found_user = True
+#                 break
+#         if found_user:
+#             session["user"] = username
+#             return redirect(url_for("home"))
+#         else:
+#             return "User not found"
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
