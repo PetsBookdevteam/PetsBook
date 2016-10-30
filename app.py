@@ -54,39 +54,6 @@ def home_page():
             user.save()
             return render_template("signin.html")
 
-# @app.route('/signup', methods=['GET', 'POST'])
-# def do_signup():
-#     if request.method == "GET":
-#         return render_template("signup.html")
-#     elif request.method == "POST":
-#         username = request.form["username"]
-#         password = request.form["password"]
-#         for user in Users.objects:
-#             if user.username == username:
-#                 alert = "Your username has already been taken. Try another!"
-#                 return render_template("signup.html", alert=alert)
-#         user = Users(username=username, password=password)
-#         user.save()
-#         return redirect(url_for("do_signin"))
-#
-# @app.route('/signin', methods=['GET', 'POST'])
-# def do_signin():
-#     if request.method == "GET":
-#         return render_template("signin.html")
-#     elif request.method == "POST":
-#         username = request.form["username"]
-#         password = request.form["password"]
-#         found_user = False
-#         for user in Users.objects:
-#             if user.username == username and user.password == password:
-#                 found_user = True
-#                 break
-#         if found_user:
-#             session["user"] = username
-#             return redirect(url_for("home"))
-#         else:
-#             return "User not found"
-
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     if "user" in session and session["user"]:
