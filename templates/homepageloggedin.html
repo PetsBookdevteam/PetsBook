@@ -107,11 +107,8 @@
             </div>
             <script>
                 $(document).ready(function(){
-                    $("#sidebar").sticky({topSpacing : 16, bottomSpacing : 116});
-                });
-                $(window).resize(function () {
-                    if (jQuery(window).innerWidth() < 584) {
-                        $("#sidebar").unstick();
+                    if (jQuery(window).innerWidth() >600) {
+                        $("#sidebar").sticky({topSpacing: 16, bottomSpacing: 116});
                     }
                 })
             </script>
