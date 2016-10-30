@@ -26,37 +26,40 @@ app.config["SECRET_KEY"] = "PetsBookDevTe@m"
 
 @app.route('/', methods=["GET", "POST"])
 def home_page():
-    if request.method == "GET":
-        return render_template("homepage.html", users=Users.objects)
-    elif request.method == "POST":
-        if 'signin' in request.form:
-            username_signin = request.form["username_signin"]
-            password_signin = request.form["password_signin"]
-            found_user = False
-            for user in Users.objects:
-                if user.username == username_signin and user.password == password_signin:
-                    found_user = True
-                    break
-            if found_user:
-                session["user"] = username_signin
-                return redirect(url_for("home"))
-            else:
-                alert_signin = "User not found. Please try again!"
-                return render_template("signin.html", alert_signin=alert_signin)
-        elif 'signup' in request.form:
-            username_signup = request.form["username_signup"]
-            password_signup = request.form["password_signup"]
-            for user in Users.objects:
-                if user.username == username_signup:
-                    alert_signup = "This username has already been taken!"
-                    return render_template("homepage.html", alert_signup=alert_signup)
-            user = Users(username=username_signup, password=password_signup)
-            user.save()
-            return render_template("signin.html")
+    if "user" in session:
+        return redirect(url_for("home"))
+    else:
+        if request.method == "GET":
+            return render_template("homepage.html", users=Users.objects)
+        elif request.method == "POST":
+            if 'signin' in request.form:
+                username_signin = request.form["username_signin"]
+                password_signin = request.form["password_signin"]
+                found_user = False
+                for user in Users.objects:
+                    if user.username == username_signin and user.password == password_signin:
+                        found_user = True
+                        break
+                if found_user:
+                    session["user"] = username_signin
+                    return redirect(url_for("home"))
+                else:
+                    alert_signin = "User not found. Please try again!"
+                    return render_template("signin.html", alert_signin=alert_signin)
+            elif 'signup' in request.form:
+                username_signup = request.form["username_signup"]
+                password_signup = request.form["password_signup"]
+                for user in Users.objects:
+                    if user.username == username_signup:
+                        alert_signup = "This username has already been taken!"
+                        return render_template("homepage.html", alert_signup=alert_signup)
+                user = Users(username=username_signup, password=password_signup)
+                user.save()
+                return render_template("signin.html")
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
-    if "user" in session and session["user"]:
+    if "user" in session:
         if request.method == "GET":
             liked_user = session["user"]
             rank_list = []
@@ -75,7 +78,7 @@ def home():
                                                             add_to_set__pet__liked_users=session["user"], )
         return jsonify({"votes": votes})
     else:
-        return redirect(url_for("do_signup"))
+        return redirect(url_for("home_page"))
 
 @app.route('/signout')
 def do_signout():
