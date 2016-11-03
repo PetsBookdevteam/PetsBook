@@ -1,11 +1,17 @@
 from flask import *
 from mongoengine import *
+import os
+from werkzeug.utils import secure_filename
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, "static", "uploads")
 
 connect("c4e6db", host="ds053126.mlab.com", port=53126, username="admin", password="admin")
 
 class Upload(Document):
     img_upload = ListField()
     caption = ListField()
+    liked_users = ListField()
 
 class Pet(Document):
     name = StringField()
@@ -22,7 +28,7 @@ class Users(Document):
     pet = EmbeddedDocumentField("Pet")
 
 app = Flask(__name__)
-
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["SECRET_KEY"] = "PetsBookDevTe@m"
 
 @app.route('/', methods=["GET", "POST"])
@@ -73,7 +79,7 @@ def home():
             username = request.form["username"]
             votes = request.form["votes"]
             found_document = Users.objects.get(username=username)
-            if session["user"] not in found_document.pet["liked_users"]:
+            if session["user"] not in found_document.pet.liked_users:
                 votes = int(votes) + 1
                 Users.objects(username=username).update_one(set__pet__like_count=votes,
                                                             add_to_set__pet__liked_users=session["user"], )
@@ -81,7 +87,7 @@ def home():
     else:
         return redirect(url_for("home_page"))
 
-@app.route('/profile')
+@app.route('/profile', methods=["GET", "POST"])
 def get_profile():
     if "user" not in session:
         return redirect(url_for("home_page"))
@@ -89,8 +95,16 @@ def get_profile():
     user = Users.objects(username=username).first()
     if request.method == "GET":
         return render_template("profile.html", user=user)
-
-
+    elif request.method == "POST":
+        img_upload = request.files["img_upload"]
+        caption = request.form["caption"]
+        img_name = secure_filename(img_upload.filename)
+        img_path = os.path.join(app.config["UPLOAD_FOLDER"], img_name)
+        img_upload.save(img_path)
+        upload = Upload(img_upload=img_upload, caption=caption)
+        upload.save()
+        Users.objects(username=username).update_one(set__pet__upload=upload)
+        return "Uploaded"
 
 @app.route('/signout')
 def do_signout():
