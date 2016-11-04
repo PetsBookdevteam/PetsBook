@@ -164,11 +164,7 @@ for (i = 0; i < close.length; i++) {
                             <div class="w3-container w3-green w3-center">
                                 <p>More Pics</p>
                             </div>
-                            {% for i in range(0,4) %}
-                                <div class="w3-half">
-                                    <img src="{{ user.pet.upload.img_upload }}" width="100%">
-                                </div>
-                            {% endfor %}
+                            <img src="../static/uploads/{{ user.pet.uploads[0].img_upload }}" style="width: 100%">
                         </div>
                     </div>
                 {% endif %}

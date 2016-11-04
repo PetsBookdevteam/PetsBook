@@ -9,8 +9,8 @@ UPLOAD_FOLDER = os.path.join(APP_ROOT, "static", "uploads")
 connect("c4e6db", host="ds053126.mlab.com", port=53126, username="admin", password="admin")
 
 class Upload(Document):
-    img_upload = ListField()
-    caption = ListField()
+    img_upload = StringField()
+    caption = StringField()
     liked_users = ListField()
 
 class Pet(Document):
@@ -20,7 +20,7 @@ class Pet(Document):
     rank = IntField()
     like_count = IntField()
     liked_users = ListField()
-    upload = EmbeddedDocumentField("Upload")
+    uploads = EmbeddedDocumentListField("Upload")
 
 class Users(Document):
     username = StringField()
@@ -101,9 +101,8 @@ def get_profile():
         img_name = secure_filename(img_upload.filename)
         img_path = os.path.join(app.config["UPLOAD_FOLDER"], img_name)
         img_upload.save(img_path)
-        upload = Upload(img_upload=img_upload, caption=caption)
-        upload.save()
-        Users.objects(username=username).update_one(set__pet__upload=upload)
+        upload = Upload(img_upload=img_name, caption=caption)
+        Users.objects(username=username).update_one(add_to_set__pet__uploads=upload)
         return "Uploaded"
 
 @app.route('/signout')
