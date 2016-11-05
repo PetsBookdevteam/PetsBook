@@ -17,7 +17,6 @@ class Pet(Document):
     name = StringField()
     img_ava = StringField()
     des = StringField()
-    rank = IntField()
     like_count = IntField()
     liked_users = ListField()
     uploads = EmbeddedDocumentListField("Upload")
@@ -25,6 +24,7 @@ class Pet(Document):
 class Users(Document):
     username = StringField()
     password = StringField()
+    rank = IntField()
     pet = EmbeddedDocumentField("Pet")
 
 app = Flask(__name__)
@@ -83,7 +83,7 @@ def home():
                     rank_list.append((user.pet.like_count, user.username))
                     rank_list.sort(reverse=True)
                     rank = rank_list.index((user.pet.like_count, user.username)) + 1
-                    Users.objects(username=user.username).update_one(set__pet__rank=rank)
+                    Users.objects(username=user.username).update_one(set__rank=rank)
             return render_template("homepageloggedin.html", users=Users.objects,
                                                             logged_in_user=logged_in_user,
                                                             rank=rank_list)
@@ -117,7 +117,7 @@ def get_profile(username):
                     rank_list.append((user.pet.like_count, user.username))
                     rank_list.sort(reverse=True)
                     rank = rank_list.index((user.pet.like_count, user.username)) + 1
-                    Users.objects(username=username).update_one(set__pet__rank=rank)
+                    Users.objects(username=username).update_one(set__rank=rank)
             return render_template("profile.html", user=profile_user, logged_in_user=logged_in_user)
         elif request.method == "POST":
             if "update_profile" in request.form:
