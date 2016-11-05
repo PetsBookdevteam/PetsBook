@@ -51,7 +51,7 @@
 <!-- Navbar (placed at the bottom of the header image) -->
     <ul class="w3-navbar w3-xlarge w3-red w3-round w3-display-bottommiddle w3-hide-small" style="bottom:-16px">
         <li><a class="w3-hover-green" href="{{ url_for("home") }}">Home</a></li>
-        <li><a class="w3-hover-green" href="{{ url_for("get_profile") }}">Profile</a></li>
+        <li><a class="w3-hover-green" href="{{ url_for("get_profile", username=logged_in_user.username) }}">Profile</a></li>
         <li><a class="w3-hover-green" href="{{ url_for("do_signout") }}">Sign Out</a></li>
     </ul>
 </header>
@@ -59,7 +59,7 @@
 {#<!-- Navbar on small screens -->#}
 <ul class="w3-navbar w3-large w3-margin-top w3-red w3-hide-large w3-hide-medium">
     <li><a class="w3-hover-green" href="{{ url_for("home") }}">Home</a></li>
-    <li><a class="w3-hover-green" href="{{ url_for("get_profile") }}">Profile</a></li>
+    <li><a class="w3-hover-green" href="{{ url_for("get_profile", username=logged_in_user.username) }}">Profile</a></li>
     <li><a class="w3-hover-green" href="{{ url_for("do_signout") }}">Sign Out</a></li>
 </ul>
 
@@ -67,16 +67,120 @@
 <div class="w3-margin-bottom" style="margin-top: 32px">
     {% if not user.pet %}
         <div class="w3-container w3-margin-top">
-            <h1>This user have no pet yet</h1>
+            <div class="w3-animate-right w3-round alert warning" style="margin: 16px">
+                <span class="closebtn">&times;</span>
+                <p>Hi, {{ user.username }}! Update your profile to start sharing your pet!</p>
+            </div>
+            <script>
+            var close = document.getElementsByClassName("closebtn");
+            var i;
+            for (i = 0; i < close.length; i++) {
+                close[i].onclick = function(){
+                    var div = this.parentElement;
+                    div.style.opacity = "0";
+                    setTimeout(function(){ div.style.display = "none"; }, 600);
+                }
+            }
+            </script>
+            <div class="w3-card-2" style="margin: 64px">
+                <div class="w3-container w3-green">
+                    <h1>Update Profile</h1>
+                </div>
+                <div class="w3-container w3-margin-top">
+                    <form method="post" action="{{ url_for("get_profile", username=logged_in_user.username) }}" enctype="multipart/form-data" id="update_profile">
+                        <style>
+                            textarea {
+                                padding: 16px 16px;
+                                margin-bottom: 12px;
+                                box-sizing: border-box;
+                                border: 2px solid #ccc;
+                                border-radius: 4px;
+                                background-color: #f8f8f8;
+                                font-size: 16px;
+                                resize: none;
+                            }
+                        </style>
+                        <textarea name="name" form="update_profile" placeholder="Enter your pet name here!" maxlength="25" style="width: 25%; height: 60px" required></textarea>
+                        <textarea name="des" form="update_profile" placeholder="Write a short description about your pet!" style="width: 100%; height: 100px" required></textarea>
+                        <div style="height: 0px; overflow: hidden">
+                                <input type="file" id="img_ava" name="img_ava">
+                        </div>
+                        <button type="button" class="w3-red w3-btn-block w3-round w3-margin-bottom" onclick="chooseFile();">Get your pet a profile picture</button>
+                        <script>
+                            function chooseFile() {
+                                $("#img_ava").click();
+                            }
+                        </script>
+                        <div class="w3-container w3-center">
+                            <img class="w3-image w3-margin-bottom" src="" id="img_preview">
+                        </div>
+                        <script>
+                            function readURL(input) {
+                                if (input.files && input.files[0]) {
+                                    var reader = new FileReader();
+                                    reader.onload = function (e) {
+                                        $('#img_preview').attr('src', e.target.result);
+                                    };
+                                    reader.readAsDataURL(input.files[0]);
+                                }
+                            }
+                            $("#img_ava").change(function(){
+                                readURL(this);
+                            });
+                        </script>
+                        <input type="submit" name="update_profile" value="Submit" class="w3-button w3-green w3-btn-block w3-round w3-margin-bottom">
+                    </form>
+                </div>
+            </div>
         </div>
     {% else %}
         <div class="w3-row" style="padding-top: 16px;">
-            <div class="w3-third w3-container w3-margin-bottom">
-                <div class="w3-card-2" id="sidebar">
+            <div class="w3-quarter w3-container w3-margin-bottom">
+                <div class="w3-card-2 sidebar">
+                    <div class="w3-container w3-green w3-center">
+                        <h1>Stats</h1>
+                    </div>
+                    <div class="w3-container">
+                        {% if logged_in_user.username in user.pet.liked_users %}
+                            <p class="w3-xxxlarge"><i class="w3-text-yellow fa fa-trophy w3-margin-left w3-margin-right"></i>{{ user.pet.rank }}</p>
+                            <p class="w3-xxxlarge"><i class="w3-text-red fa fa-heart w3-margin-left w3-margin-right"></i>{{ user.pet.like_count }}</p>
+                            <div class="w3-container w3-red w3-padding w3-margin-bottom w3-center w3-round">Voted</div>
+                        {% elif logged_in_user not in user.pet.liked_users %}
+                            <div class="stats">
+                                <p class="w3-xxxlarge"><i class="w3-text-yellow fa fa-trophy w3-margin-left w3-margin-right"></i>{{ user.pet.rank }}</p>
+                                <p class="w3-xxxlarge"><i class="w3-text-red fa fa-heart w3-margin-left w3-margin-right"></i><a class="count" id="votes">{{ user.pet.like_count }}</a></p>
+                                <button type="button" name="vote" class="w3-red w3-padding w3-margin-bottom w3-btn-block w3-round" id="vote">Vote</button>
+                            </div>
+                            <script type="text/javascript">
+                                $(".stats").on("click", function(){
+                                    var $counter = $(this).find(".count");
+                                    var count = $counter.text() | 0;
+                                    $.ajax({
+                                        url: '/profile',
+                                        data: {
+                                            votes : count
+                                        },
+                                        type: 'POST'
+                                    })
+                                    .done(function (data) {
+                                        $("#votes").text(data.votes).show()
+                                    });
+                                    event.preventDefault();
+                                    $('#vote').replaceWith('<div class="w3-container w3-red w3-padding w3-margin-bottom w3-center">Voted</div>');
+                                });
+                                </script>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="w3-quarter w3-container w3-margin-bottom">
+                <div class="w3-card-2 sidebar">
                     <div class="w3-container w3-green w3-center">
                         <h1>Info</h1>
                     </div>
-                    <img class="w3-image" src="{{ user.pet.img_ava }}" style="width: 100%">
+                    <div class="w3-container w3-margin-top">
+                        <img class="w3-round w3-hover-opacity w3-image" src="../static/uploads/{{ user.pet.img_ava }}" style="width: 100%">
+                    </div>
                     <div class="w3-container">
                         <h5><i class="w3-text-green fa fa-user w3-margin-right"></i>{{ user.username }}</h5>
                         <h5><i class="w3-text-green fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h5>
@@ -84,13 +188,20 @@
                     </div>
                 </div>
             </div>
-            <div class="w3-twothird w3-container">
+            <script>
+                $(document).ready(function(){
+                    if (jQuery(window).innerWidth() >600) {
+                        $(".sidebar").sticky({bottomSpacing: 130});
+                    }
+                })
+            </script>
+            <div class="w3-half w3-container">
                 <div class="w3-card-2">
                     <div class="w3-container w3-green">
                         <h1>Upload</h1>
                     </div>
                     <div class="w3-container w3-margin-top">
-                        <form method="post" action="{{ url_for("get_profile") }}" enctype="multipart/form-data" id="upload">
+                        <form method="post" action="{{ url_for("get_profile", username=logged_in_user.username) }}" enctype="multipart/form-data" id="upload">
                             <div style="height: 0px; overflow: hidden">
                                 <input type="file" id="img_upload" name="img_upload">
                             </div>
@@ -130,11 +241,13 @@
                                 }
                             </style>
                             <textarea name="caption" form="upload" placeholder="Write something about the picture..." maxlength="200"></textarea>
-                            <input type="submit" name="upload" value="Upload" class="w3-button w3-green w3-btn-block w3-round w3-margin-bottom">
+                            <input type="submit" name="upload" value="Upload" class="w3-button w3-red w3-btn-block w3-round w3-margin-bottom">
                         </form>
                     </div>
                 </div>
+                <div class="w3-container w3-border-left">
 
+                </div>
             </div>
         </div>
 

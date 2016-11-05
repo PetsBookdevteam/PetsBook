@@ -67,19 +67,24 @@ def home_page():
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     if "user" in session:
+        logged_in_user_name = session["user"]
+        logged_in_user = Users.objects(username=logged_in_user_name).first()
         if request.method == "GET":
-            liked_user = session["user"]
             rank_list = []
             for user in Users.objects:
                 if user.pet is not None:
                     rank_list.append((user.pet.like_count, user.username))
                     rank_list.sort(reverse=True)
-            return render_template("homepageloggedin.html", users=Users.objects, liked_user=liked_user, rank=rank_list)
+                    rank = rank_list.index((user.pet.like_count, user.username)) + 1
+                    Users.objects(username=user.username).update_one(set__pet__rank=rank)
+            return render_template("homepageloggedin.html", users=Users.objects,
+                                                            logged_in_user=logged_in_user,
+                                                            rank=rank_list)
         elif request.method == "POST":
             username = request.form["username"]
             votes = request.form["votes"]
             found_document = Users.objects.get(username=username)
-            if session["user"] not in found_document.pet.liked_users:
+            if session["user"] not in found_document.pet["liked_users"]:
                 votes = int(votes) + 1
                 Users.objects(username=username).update_one(set__pet__like_count=votes,
                                                             add_to_set__pet__liked_users=session["user"], )
@@ -87,23 +92,55 @@ def home():
     else:
         return redirect(url_for("home_page"))
 
-@app.route('/profile', methods=["GET", "POST"])
-def get_profile():
+# <s href=profile/{{user.username}}
+
+# <a href=url_for("get_profile",username={{user.username}}) />
+
+@app.route('/profile/<username>', methods=["GET", "POST"])
+def get_profile(username):
     if "user" not in session:
         return redirect(url_for("home_page"))
-    username = session["user"]
-    user = Users.objects(username=username).first()
-    if request.method == "GET":
-        return render_template("profile.html", user=user)
-    elif request.method == "POST":
-        img_upload = request.files["img_upload"]
-        caption = request.form["caption"]
-        img_name = secure_filename(img_upload.filename)
-        img_path = os.path.join(app.config["UPLOAD_FOLDER"], img_name)
-        img_upload.save(img_path)
-        upload = Upload(img_upload=img_name, caption=caption)
-        Users.objects(username=username).update_one(add_to_set__pet__uploads=upload)
-        return "Uploaded"
+    else:
+        logged_in_user_name = session["user"]
+        logged_in_user = Users.objects(username=logged_in_user_name).first()
+        liked_user = Users.objects(username=username).first()
+        if request.method == "GET":
+            rank_list = []
+            for user in Users.objects:
+                if user.pet is not None:
+                    rank_list.append((user.pet.like_count, user.username))
+                    rank_list.sort(reverse=True)
+                    rank = rank_list.index((user.pet.like_count, user.username)) + 1
+                    Users.objects(username=username).update_one(set__pet__rank=rank)
+            return render_template("profile.html", user=liked_user, logged_in_user=logged_in_user)
+        elif request.method == "POST":
+            if "update_profile" in request.form:
+                name = request.form["name"]
+                des = request.form["des"]
+                img_ava = request.files["img_ava"]
+                img_name = secure_filename(img_ava.filename)
+                img_path = os.path.join(app.config["UPLOAD_FOLDER"], img_name)
+                img_ava.save(img_path)
+                pet = Pet(name=name, img_ava=img_name, des=des, like_count=0)
+                Users.objects(username=username).update_one(set__pet=pet)
+                return redirect(url_for("get_profile"))
+            elif "upload" in request.form:
+                img_upload = request.files["img_upload"]
+                caption = request.form["caption"]
+                img_name = secure_filename(img_upload.filename)
+                img_path = os.path.join(app.config["UPLOAD_FOLDER"], img_name)
+                img_upload.save(img_path)
+                upload = Upload(img_upload=img_name, caption=caption)
+                Users.objects(username=username).update_one(add_to_set__pet__uploads=upload)
+                return redirect(url_for("get_profile"))
+            else:
+                votes = request.form["votes"]
+                found_document = Users.objects.get(username=username)
+                if session["user"] not in found_document.pet["liked_users"]:
+                    votes = int(votes) + 1
+                    Users.objects(username=username).update_one(set__pet__like_count=votes,
+                                                                add_to_set__pet__liked_users=session["user"], )
+                return jsonify({"votes": votes})
 
 @app.route('/signout')
 def do_signout():
