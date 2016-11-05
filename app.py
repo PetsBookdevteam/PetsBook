@@ -62,7 +62,14 @@ def home_page():
                         return render_template("homepage.html", alert_signup=alert_signup)
                 user = Users(username=username_signup, password=password_signup)
                 user.save()
-                return render_template("signin.html")
+                found_user = None
+                for user in Users.objects:
+                    if user.username == username_signup and user.password == password_signup:
+                        found_user = user
+                        break
+                if found_user:
+                    session["user"] = user.username
+                    return redirect(url_for("home"))
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
