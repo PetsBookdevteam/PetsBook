@@ -156,10 +156,9 @@ for (i = 0; i < close.length; i++) {
                                 <img class="mySlides_{{ user.username }} w3-image w3-animate-right" src="../static/uploads/{{ user.pet.uploads[i].img_upload }}">
                             {% endfor %}
                             <script>
-                                var myIndex = 0;
-                                carousel();
+                                carouse_{{ user.username }}(0);
 
-                                function carousel() {
+                                function carouse_{{ user.username }}(myIndex) {
                                     var i;
                                     var x = document.getElementsByClassName("mySlides_{{ user.username }}");
                                     for (i = 0; i < x.length; i++) {
@@ -167,8 +166,8 @@ for (i = 0; i < close.length; i++) {
                                     }
                                     myIndex++;
                                     if (myIndex > x.length) {myIndex = 1}
-                                    ///x[myIndex-1].style.display = "block";
-                                    setTimeout(carousel, 2000); // Change image every 2 seconds
+                                    x[myIndex-1].style.display = "block";
+                                    setTimeout(function() {  carouse_{{ user.username }}(myIndex); }, 2000);
                                 }
                             </script>
                         </div>
