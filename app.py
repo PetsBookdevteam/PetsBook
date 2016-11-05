@@ -122,7 +122,7 @@ def get_profile(username):
                 img_ava.save(img_path)
                 pet = Pet(name=name, img_ava=img_name, des=des, like_count=0)
                 Users.objects(username=username).update_one(set__pet=pet)
-                return redirect(url_for("get_profile"))
+                return redirect(url_for("get_profile", username=logged_in_user.username))
             elif "upload" in request.form:
                 img_upload = request.files["img_upload"]
                 caption = request.form["caption"]

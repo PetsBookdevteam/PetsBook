@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script type=text/javascript src="../static/jquery-3.1.1.min.js"></script>
 <script type=text/javascript src="../static/garand-sticky/jquery.sticky.js"></script>
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="../static/w3.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lobster">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Great+Vibes">
@@ -42,7 +42,7 @@ for (i = 0; i < close.length; i++) {
     <img class="mySlides w3-animate-fading w3-image" src="../static/slideshow/img_1.jpg" style="width: 100%;">
     <img class="mySlides w3-animate-fading w3-image" src="../static/slideshow/img_2.jpg" style="width: 100%;">
     <img class="mySlides w3-animate-fading w3-image" src="../static/slideshow/img_3.png" style="width: 100%;">
-    <img class="mySlides w3-animate-fading w3-image" src="../static/slideshow/img_1.jpg" style="width: 100%;">
+    <img class="mySlides w3-animate-fading w3-image" src="../static/slideshow/img_4.jpg" style="width: 100%;">
     <script>
         var slideIndex = 0;
         carousel();
@@ -104,7 +104,7 @@ for (i = 0; i < close.length; i++) {
         </div>
         <div class="w3-rest w3-container w3-border-left">
             {% for user in users %}
-                {% if user.pet is defined %}
+                {% if user.pet != None %}
                     {% set block_name = "block_" + user.username %}
                     <div class="w3-rest w3-border-bottom w3-margin-bottom">
                         <div class="hovereffect w3-container w3-twothird w3-margin-top w3-margin-bottom">
@@ -153,8 +153,24 @@ for (i = 0; i < close.length; i++) {
                                 <p>More Pics</p>
                             </div>
                             {% for i in range(0, user.pet.uploads|length) %}
-                                <img class="w3-image" src="../static/uploads/{{ user.pet.uploads[i].img_upload }}">
+                                <img class="mySlides_{{ user.username }} w3-image w3-animate-right" src="../static/uploads/{{ user.pet.uploads[i].img_upload }}">
                             {% endfor %}
+                            <script>
+                                var myIndex = 0;
+                                carousel();
+
+                                function carousel() {
+                                    var i;
+                                    var x = document.getElementsByClassName("mySlides_{{ user.username }}");
+                                    for (i = 0; i < x.length; i++) {
+                                       x[i].style.display = "none";
+                                    }
+                                    myIndex++;
+                                    if (myIndex > x.length) {myIndex = 1}
+                                    ///x[myIndex-1].style.display = "block";
+                                    setTimeout(carousel, 2000); // Change image every 2 seconds
+                                }
+                            </script>
                         </div>
                     </div>
                 {% endif %}
