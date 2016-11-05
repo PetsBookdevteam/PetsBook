@@ -4,6 +4,7 @@ import os
 from werkzeug.utils import secure_filename
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+STATIC_FOLDER = os.path.join(APP_ROOT, "static")
 UPLOAD_FOLDER = os.path.join(APP_ROOT, "static", "uploads")
 
 connect("c4e6db", host="ds053126.mlab.com", port=53126, username="admin", password="admin")
@@ -27,7 +28,7 @@ class Users(Document):
     rank = IntField()
     pet = EmbeddedDocumentField("Pet")
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=STATIC_FOLDER)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["SECRET_KEY"] = "PetsBookDevTe@m"
 
