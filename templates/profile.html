@@ -248,11 +248,21 @@
                     </div>
                 {% endif %}
                 {% if user.pet.uploads is defined %}
+                    <div class="w3-container w3-green sidebar">
+                        <h1>Posts</h1>
+                    </div>
+                    <script>
+                        $(document).ready(function(){
+                            if (jQuery(window).innerWidth >600) {
+                                $(".sidebar").sticky({bottomSpacing: 130});
+                            }
+                        })
+                    </script>
                     <div class="w3-container w3-border-left">
                         {% for i in range(0, user.pet.uploads|length) %}
                             {% set block_name = "block_" + i|string %}
                             <div class="w3-border-bottom w3-margin-bottom">
-                                <img src="../static/uploads/{{ user.pet.uploads[i].img_upload }}" class="w3-image w3-round" style="width: 100%">
+                                <img src="../static/uploads/{{ user.pet.uploads[i].img_upload }}" class="w3-image w3-margin-top w3-round" style="width: 100%">
                                 <h5><i class="w3-text-green fa fa-comment w3-margin-right"></i>{{ user.pet.uploads[i].caption }}</h5>
                             </div>
                         {% endfor %}
