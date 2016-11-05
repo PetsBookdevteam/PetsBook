@@ -83,8 +83,7 @@ def home():
         elif request.method == "POST":
             username = request.form["username"]
             votes = request.form["votes"]
-            found_document = Users.objects.get(username=username)
-            if session["user"] not in found_document.pet["liked_users"]:
+            if logged_in_user.username not in Users.objects.get(username=username).pet["liked_users"]:
                 votes = int(votes) + 1
                 Users.objects(username=username).update_one(set__pet__like_count=votes,
                                                             add_to_set__pet__liked_users=session["user"], )
@@ -103,7 +102,7 @@ def get_profile(username):
     else:
         logged_in_user_name = session["user"]
         logged_in_user = Users.objects(username=logged_in_user_name).first()
-        liked_user = Users.objects(username=username).first()
+        profile_user = Users.objects(username=username).first()
         if request.method == "GET":
             rank_list = []
             for user in Users.objects:
@@ -112,7 +111,7 @@ def get_profile(username):
                     rank_list.sort(reverse=True)
                     rank = rank_list.index((user.pet.like_count, user.username)) + 1
                     Users.objects(username=username).update_one(set__pet__rank=rank)
-            return render_template("profile.html", user=liked_user, logged_in_user=logged_in_user)
+            return render_template("profile.html", user=profile_user, logged_in_user=logged_in_user)
         elif request.method == "POST":
             if "update_profile" in request.form:
                 name = request.form["name"]
@@ -132,11 +131,11 @@ def get_profile(username):
                 img_upload.save(img_path)
                 upload = Upload(img_upload=img_name, caption=caption)
                 Users.objects(username=username).update_one(add_to_set__pet__uploads=upload)
-                return redirect(url_for("get_profile"))
+                return redirect(url_for("get_profile", username=username))
             else:
                 votes = request.form["votes"]
                 found_document = Users.objects.get(username=username)
-                if session["user"] not in found_document.pet["liked_users"]:
+                if logged_in_user.username not in found_document.pet["liked_users"]:
                     votes = int(votes) + 1
                     Users.objects(username=username).update_one(set__pet__like_count=votes,
                                                                 add_to_set__pet__liked_users=session["user"], )
