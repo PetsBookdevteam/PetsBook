@@ -64,18 +64,18 @@ for (i = 0; i < close.length; i++) {
     </div>
 
 <!-- Navbar (placed at the bottom of the header image) -->
-    <ul class="w3-navbar w3-xlarge w3-red w3-round w3-display-bottommiddle w3-hide-small" style="bottom:-16px">
-        <li><a class="w3-hover-green" href="{{ url_for("home") }}">Home</a></li>
-        <li><a class="w3-hover-green" href="{{ url_for("get_profile", username=logged_in_user.username) }}">Profile</a></li>
-        <li><a class="w3-hover-green" href="{{ url_for("do_signout") }}">Sign Out</a></li>
+    <ul class="w3-navbar w3-xlarge w3-green w3-round w3-display-bottommiddle w3-hide-small" style="bottom:-16px">
+        <li><a class="w3-hover-red" href="{{ url_for("home") }}">Home</a></li>
+        <li><a class="w3-hover-red" href="{{ url_for("get_profile", username=logged_in_user.username) }}">Profile</a></li>
+        <li><a class="w3-hover-red" href="{{ url_for("do_signout") }}">Sign Out</a></li>
     </ul>
 </header>
 
 {#<!-- Navbar on small screens -->#}
-<ul class="w3-navbar w3-large w3-margin-top w3-red w3-hide-large w3-hide-medium">
-    <li><a class="w3-hover-green" href="{{ url_for("home") }}">Home</a></li>
-    <li><a class="w3-hover-green" href="{{ url_for("get_profile", username=logged_in_user.username) }}">Profile</a></li>
-    <li><a class="w3-hover-green" href="{{ url_for("do_signout") }}">Sign Out</a></li>
+<ul class="w3-navbar w3-large w3-margin-top w3-green w3-hide-large w3-hide-medium">
+    <li><a class="w3-hover-red" href="{{ url_for("home") }}">Home</a></li>
+    <li><a class="w3-hover-red" href="{{ url_for("get_profile", username=logged_in_user.username) }}">Profile</a></li>
+    <li><a class="w3-hover-red" href="{{ url_for("do_signout") }}">Sign Out</a></li>
 </ul>
 
 <!-- Page content -->
@@ -90,7 +90,7 @@ for (i = 0; i < close.length; i++) {
                 </div>
                 <div class="w3-container">
                     {% for pet in rank %}
-                        <h3><i class="w3-text-yellow fa fa-trophy w3-margin-left w3-margin-right"></i>{{ pet[1] }} : {{ pet[0] }}</h3>
+                        <h5><i class="w3-text-yellow fa fa-trophy w3-margin-left w3-margin-right"></i>{{ pet[1] }} : {{ pet[0] }}</h5>
                     {% endfor %}
                 </div>
             </div>
@@ -115,7 +115,7 @@ for (i = 0; i < close.length; i++) {
                             </div>
                         </div>
                         <div class="w3-third w3-container">
-                            <h5><i class="w3-text-green fa fa-user w3-margin-right"></i>{{ user.username }}</h5>
+                            <a href="{{ url_for("get_profile", username=user.username) }}" style="text-decoration: none"><h5><i class="w3-text-green fa fa-user w3-margin-right"></i>{{ user.username }}</h5></a>
                             <h5><i class="w3-text-green fa fa-paw w3-margin-right"></i>{{ user.pet.name }}</h5>
                             <h5><i class="w3-text-green fa fa-pencil w3-margin-right"></i>{{ user.pet.des }}</h5>
                             <h5><i class="w3-text-yellow fa fa-trophy  w3-margin-right"></i>{{ user.rank }}</h5>

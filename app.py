@@ -83,6 +83,8 @@ def home():
                 if user.pet is not None:
                     rank_list.append((user.pet.like_count, user.username))
                     rank_list.sort(reverse=True)
+            for user in Users.objects:
+                if user.pet is not None:
                     rank = rank_list.index((user.pet.like_count, user.username)) + 1
                     Users.objects(username=user.username).update_one(set__rank=rank)
             return render_template("homepageloggedin.html", users=Users.objects,
@@ -117,8 +119,10 @@ def get_profile(username):
                 if user.pet is not None:
                     rank_list.append((user.pet.like_count, user.username))
                     rank_list.sort(reverse=True)
+            for user in Users.objects:
+                if user.pet is not None:
                     rank = rank_list.index((user.pet.like_count, user.username)) + 1
-                    Users.objects(username=username).update_one(set__rank=rank)
+                    Users.objects(username=user.username).update_one(set__rank=rank)
             return render_template("profile.html", user=profile_user, logged_in_user=logged_in_user)
         elif request.method == "POST":
             if "update_profile" in request.form:
@@ -146,7 +150,7 @@ def get_profile(username):
                 if logged_in_user.username not in found_document.pet["liked_users"]:
                     votes = int(votes) + 1
                     Users.objects(username=username).update_one(set__pet__like_count=votes,
-                                                                add_to_set__pet__liked_users=session["user"], )
+                                                                add_to_set__pet__liked_users=logged_in_user.username, )
                 return jsonify({"votes": votes})
 
 @app.route('/signout')
