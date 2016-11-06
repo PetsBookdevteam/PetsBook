@@ -168,7 +168,7 @@
                             }
                         </style>
                         <textarea name="name" form="update_profile" placeholder="Enter your pet name here!" maxlength="25" style="width: 100%; height: 60px" required></textarea>
-                        <textarea name="des" form="update_profile" placeholder="Write a short description about your pet!" maxlength="75" style="width: 100%; height: 100px" required></textarea>
+                        <textarea name="des" form="update_profile" placeholder="Write a short description about your pet!" maxlength="100" style="width: 100%; height: 100px" required></textarea>
                         <div style="height: 0px; overflow: hidden">
                                 <input type="file" id="img_ava" name="img_ava">
                         </div>
@@ -241,12 +241,12 @@
                 </div>
             </div>
             <div class="w3-quarter w3-container w3-margin-bottom">
-                <div class="w3-card-2 sidebar">
+                <div class="w3-card-2 w3-round sidebar">
                     <div class="w3-container w3-green w3-center">
                         <h1>Info</h1>
                     </div>
                     <div class="w3-container w3-margin-top">
-                        <img class="w3-round w3-hover-opacity w3-image" src="../static/uploads/{{ user.pet.img_ava }}" style="width: 100%">
+                        <img class="w3-round w3-image" src="../static/uploads/{{ user.pet.img_ava }}" style="width: 100%">
                     </div>
                     <div class="w3-container">
                         <h5><i class="w3-text-green fa fa-user w3-margin-right"></i>{{ user.username }}</h5>
@@ -264,7 +264,7 @@
             </script>
             <div class="w3-half w3-container">
                 {% if logged_in_user == user %}
-                    <div class="w3-card-2" style="margin-bottom: 32px">
+                    <div class="w3-card-2 w3-round" style="margin-bottom: 32px">
                         <div class="w3-container w3-green w3-center">
                             <h1>Upload</h1>
                         </div>
@@ -297,7 +297,7 @@
                                 <style>
                                     textarea {
                                         width: 100%;
-                                        height: 100px;
+                                        height: 140px;
                                         padding: 16px 16px;
                                         margin-bottom: 12px;
                                         box-sizing: border-box;
@@ -308,37 +308,39 @@
                                         resize: none;
                                     }
                                 </style>
-                                <textarea name="caption" form="upload" placeholder="Write something about the picture..." maxlength="200"></textarea>
+                                <textarea name="caption" form="upload" placeholder="Write something about the picture..." maxlength="150"></textarea>
                                 <input type="submit" name="upload" value="Upload" class="w3-button w3-red w3-btn-block w3-round w3-margin-bottom">
                             </form>
                         </div>
                     </div>
                 {% endif %}
-                <div class="w3-container w3-green w3-center sidebar">
-                    <h1>Posts</h1>
+                <div class="w3-card-2 w3-round">
+                    <div class="w3-container w3-green w3-center sidebar">
+                        <h1>Posts</h1>
+                    </div>
+                    {% if user.pet.uploads != [] %}
+                        <script>
+                            $(document).ready(function(){
+                                if (jQuery(window).innerWidth >600) {
+                                    $(".sidebar").sticky({bottomSpacing: 130});
+                                }
+                            })
+                        </script>
+                        <div class="w3-container">
+                            {% for i in range(user.pet.uploads|length - 1, -1, -1) %}
+                                {% set block_name = "block_" + i|string %}
+                                <div class="w3-border-bottom w3-margin-bottom">
+                                    <img src="../static/uploads/{{ user.pet.uploads[i].img_upload }}" class="w3-image w3-margin-top w3-round" style="width: 100%">
+                                    <h5><i class="w3-text-green fa fa-comment w3-margin-right"></i>{{ user.pet.uploads[i].caption }}</h5>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="w3-container w3-center">
+                            <h3 class="w3-text-grey">No posts at the moment</h3>
+                        </div>
+                    {% endif %}
                 </div>
-                {% if user.pet.uploads != [] %}
-                    <script>
-                        $(document).ready(function(){
-                            if (jQuery(window).innerWidth >600) {
-                                $(".sidebar").sticky({bottomSpacing: 130});
-                            }
-                        })
-                    </script>
-                    <div class="w3-container w3-border-left">
-                        {% for i in range(user.pet.uploads|length - 1, -1, -1) %}
-                            {% set block_name = "block_" + i|string %}
-                            <div class="w3-border-bottom w3-margin-bottom">
-                                <img src="../static/uploads/{{ user.pet.uploads[i].img_upload }}" class="w3-image w3-margin-top w3-round" style="width: 100%">
-                                <h5><i class="w3-text-green fa fa-comment w3-margin-right"></i>{{ user.pet.uploads[i].caption }}</h5>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="w3-container w3-center">
-                        <h3 class="w3-text-grey">No posts at the moment</h3>
-                    </div>
-                {% endif %}
             </div>
         </div>
     {% endif %}

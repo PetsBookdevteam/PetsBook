@@ -64,12 +64,28 @@
             <div class="w3-margin-bottom w3-container w3-green w3-round">
                 <h1>Sign Up</h1>
             </div>
-            <form class="w3-container" method="POST" action="{{ url_for("home_page") }}">
+            <form class="w3-container" method="POST" onsubmit="return passValidation()" action="{{ url_for("home_page") }}">
                 <label>Username</label>
                 <input type="text" name="username_signup" class="w3-input" required><br>
-                <p class="w3-text-red">{{ alert_signup }}</p>
+                <p class="w3-text-red" style="margin-top: -16px">{{ alert_signup }}</p>
                 <label>Password</label>
-                <input type="password" name="password_signup" class="w3-input" required><br>
+                <input type="password" name="password_signup" class="w3-input" id="pass" required><br>
+                <label>Confirm Password</label>
+                <input type="password" class="w3-input" id="pass_confirm" onkeyup="validatePassword(); return false;" required><br>
+                <p style="margin-top: -16px;" id="message"></p>
+                <script>
+                    function validatePassword() {
+                        var pass = document.getElementById("pass").value;
+                        var pass_confirm = document.getElementById("pass_confirm").value;
+                        if (pass == pass_confirm) {
+                          document.getElementById("message").innerHTML = "Password match!";
+                          document.getElementById("message").style.color = "#66cc66"
+                      } else {
+                          document.getElementById("message").innerHTML = "Password not match!";
+                          document.getElementById("message").style.color = "#ff6666"
+                      }
+                    }
+                </script>
                 <input type="submit" name="signup" value="Sign Up" class="w3-button w3-red w3-btn-block w3-round w3-margin-bottom">
             </form>
         </div>
