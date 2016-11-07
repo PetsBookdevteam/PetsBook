@@ -7,7 +7,7 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_FOLDER = os.path.join(APP_ROOT, "static")
 UPLOAD_FOLDER = os.path.join(APP_ROOT, "static", "uploads")
 
-connect("c4e6db", host="ds053126.mlab.com", port=53126, username="admin", password="admin")
+connect("petsbook", host="ds147167.mlab.com", port=47167, username="admin", password="admin")
 
 class Upload(Document):
     img_upload = StringField()
@@ -100,10 +100,6 @@ def home():
         return jsonify({"votes": votes})
     else:
         return redirect(url_for("home_page"))
-
-# <s href=profile/{{user.username}}
-
-# <a href=url_for("get_profile",username={{user.username}}) />
 
 @app.route('/profile/<username>', methods=["GET", "POST"])
 def get_profile(username):
