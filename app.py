@@ -146,8 +146,7 @@ def get_profile(username):
                 return redirect(url_for("get_profile", username=username))
             else:
                 votes = request.form["votes"]
-                found_document = Users.objects.get(username=username)
-                if logged_in_user.username not in found_document.pet["liked_users"]:
+                if logged_in_user.username not in Users.objects.get(username=username).pet["liked_users"]:
                     votes = int(votes) + 1
                     Users.objects(username=username).update_one(set__pet__like_count=votes,
                                                                 add_to_set__pet__liked_users=logged_in_user.username, )
